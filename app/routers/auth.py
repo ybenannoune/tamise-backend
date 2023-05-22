@@ -61,14 +61,16 @@ def login(payload: schemas.LoginUserSchema, response: Response, db: Session = De
     if not utils.verify_password(payload.password, user.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Incorrect Email or Password')
+    
+    print(str(user.id))
 
     # Create access token
     access_token = Authorize.create_access_token(
-        subject=user.email, expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
+        subject=str(user.id), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
 
     # Create refresh token
     refresh_token = Authorize.create_refresh_token(
-        subject=user.email, expires_time=timedelta(minutes=REFRESH_TOKEN_EXPIRES_IN))
+        subject=str(user.id), expires_time=timedelta(minutes=REFRESH_TOKEN_EXPIRES_IN))
 
     # Store refresh and access tokens in cookie
     response.set_cookie('access_token', access_token, ACCESS_TOKEN_EXPIRES_IN * 60,
@@ -76,31 +78,17 @@ def login(payload: schemas.LoginUserSchema, response: Response, db: Session = De
     response.set_cookie('refresh_token', refresh_token,
                         REFRESH_TOKEN_EXPIRES_IN * 60, REFRESH_TOKEN_EXPIRES_IN * 60, '/', None, False, True, 'lax')
     response.set_cookie('logged_in', 'True', ACCESS_TOKEN_EXPIRES_IN * 60,
-                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, False, 'lax')
-    
-    print(access_token)
-    print(refresh_token)
+                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, False, 'lax')    
  
    # Send both access and refresh tokens
     return {'status': 'success', 'access_token': access_token, 'refresh_token': refresh_token}
 
-# @router.post('/refresh')
-# def refresh(Authorize: AuthJWT = Depends()):
-#     try:
-#         Authorize.jwt_refresh_token_required()
-#         current_user = Authorize.get_jwt_subject()
-#         new_access_token = Authorize.create_access_token(subject=current_user)
-#         return {"access_token": new_access_token}
-#     except Exception as e:
-#         print(e)
-#         raise HTTPException(status_code=401, detail="Invalid token")
-
+# Refresh access token
 @router.post('/refresh')
 def refresh_token(response: Response, request: Request, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     try:
-        print(Authorize._refresh_cookie_key)
         Authorize.jwt_refresh_token_required()
-        print("lol")
+
         user_id = Authorize.get_jwt_subject()
         if not user_id:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
@@ -126,10 +114,9 @@ def refresh_token(response: Response, request: Request, Authorize: AuthJWT = Dep
     return {'access_token': access_token}
 
 
-@router.get('/logout', status_code=status.HTTP_200_OK)
-def logout(response: Response, Authorize: AuthJWT = Depends(), user_id: str = Depends(oauth2.require_user)):
+@router.post('/logout', status_code=status.HTTP_200_OK)
+def logout(request: Request, response: Response, Authorize: AuthJWT = Depends(), user_id: str = Depends(oauth2.require_user)):
+
     Authorize.unset_jwt_cookies()
     response.set_cookie('logged_in', '', -1)
-
     return {'status': 'success'}
-

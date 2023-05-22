@@ -41,12 +41,12 @@ class Order(Base):
     address = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
 
-# Table to connect order and dish
-orders_dishes = Table('orders_dishes', Base.metadata,
-                      Column('order_id', Integer, ForeignKey('orders.id')),
-                      Column('dish_id', Integer, ForeignKey('dishes.id')),
-                      Column('quantity', Integer, nullable=False),
-                      Column('supplement', String, nullable=True),
-                      Column('modifications', String, nullable=True))
+# # Table to connect order and dish
+# orders_dishes = Table('orders_dishes', Base.metadata,
+#                       Column('order_id', Integer, ForeignKey('orders.id')),
+#                       Column('dish_id', Integer, ForeignKey('dishes.id')),
+#                       Column('quantity', Integer, nullable=False),
+#                       Column('supplement', String, nullable=True),
+#                       Column('modifications', String, nullable=True))
 
 Base.metadata.create_all(engine)
