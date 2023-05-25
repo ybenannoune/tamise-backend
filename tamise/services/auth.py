@@ -9,8 +9,36 @@ from tamise.config import settings
 from tamise.database import get_db
 from tamise.services import user as user_service
 
-ACCESS_TOKEN_EXPIRES_IN = settings.ACCESS_TOKEN_EXPIRES_IN
+ACCESS_TOKEN_EXPIRES_IN = 1
 REFRESH_TOKEN_EXPIRES_IN = settings.REFRESH_TOKEN_EXPIRES_IN
+
+
+def store_logged_in_cookies(response: Response):
+    response.set_cookie(
+        "logged_in",
+        "True",
+        ACCESS_TOKEN_EXPIRES_IN * 60,
+        ACCESS_TOKEN_EXPIRES_IN * 60,
+        "/",
+        None,
+        False,
+        False,
+        "lax",
+    )
+
+
+def store_access_token_in_cookies(response: Response, access_token: str):
+    response.set_cookie(
+        "access_token",
+        access_token,
+        ACCESS_TOKEN_EXPIRES_IN * 60,
+        ACCESS_TOKEN_EXPIRES_IN * 60,
+        "/",
+        None,
+        False,
+        True,
+        "lax",
+    )
 
 
 def login(
@@ -52,17 +80,8 @@ def login(
     )
 
     # Store refresh and access tokens in cookie
-    response.set_cookie(
-        "access_token",
-        access_token,
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        "/",
-        None,
-        False,
-        True,
-        "lax",
-    )
+    store_access_token_in_cookies(response, access_token)
+    store_logged_in_cookies(response)
     response.set_cookie(
         "refresh_token",
         refresh_token,
@@ -72,17 +91,6 @@ def login(
         None,
         False,
         True,
-        "lax",
-    )
-    response.set_cookie(
-        "logged_in",
-        "True",
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        "/",
-        None,
-        False,
-        False,
         "lax",
     )
 
@@ -121,26 +129,7 @@ def refresh(response: Response, authorize: AuthJWT, db: Session):
             )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
 
-    response.set_cookie(
-        "access_token",
-        access_token,
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        "/",
-        None,
-        False,
-        True,
-        "lax",
-    )
-    response.set_cookie(
-        "logged_in",
-        "True",
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        ACCESS_TOKEN_EXPIRES_IN * 60,
-        "/",
-        None,
-        False,
-        False,
-        "lax",
-    )
-    return {"access_token": access_token}
+    store_access_token_in_cookies(response, access_token)
+    store_logged_in_cookies(response)
+
+    return access_token

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from tamise import models, oauth2, schemas, utils
 from tamise.database import get_db
 from tamise.services import auth as auth_service
+from tamise.services import user as user_service
 
 router = APIRouter()
 
@@ -18,11 +19,11 @@ router = APIRouter()
     response_model=schemas.UserResponse,
 )
 def create_user(payload: schemas.CreateUser, db: Session = Depends(get_db)):
-    user = auth_service.create(payload, db)
+    user = user_service.create(payload, db)
     return user
 
 
-@router.post("/login")
+@router.post("/login", response_model=schemas.AuthToken)
 def login(
     payload: schemas.LoginUser,
     response: Response,
@@ -30,22 +31,19 @@ def login(
     authorize: AuthJWT = Depends(),
 ):
     access_token, refresh_token = auth_service.login(payload, response, db, authorize)
-    # Send both access and refresh tokens
-    return {
-        "status": "success",
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-    }
+
+    return {"status": "success", "access_token": access_token}
 
 
 # Refresh access token
-@router.post("/refresh")
+@router.post("/refresh", response_model=schemas.AuthToken)
 def refresh_token(
     response: Response,
     authorize: AuthJWT = Depends(),
     db: Session = Depends(get_db),
 ):
-    return auth_service.refresh(response, authorize, db)
+    access_token = auth_service.refresh(response, authorize, db)
+    return {"status": "success", "access_token": access_token}
 
 
 @router.post("/logout", status_code=status.HTTP_200_OK)

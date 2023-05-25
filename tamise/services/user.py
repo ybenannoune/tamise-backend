@@ -14,17 +14,17 @@ def get_user_from_email(email: str, db: Session):
 
 
 def create(user_schema: schemas.CreateUser, db: Session):
-    user = user_service.get_user_from_email(user_schema.email, db)
-    if user:
+    user_check = user_service.get_user_from_email(user_schema.email, db)
+    if user_check:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already exist")
 
     #  Hash the password
-    user.password = utils.hash_password(user.password)
+    user_schema.password = utils.hash_password(user_schema.password)
 
-    user.role = "user"
-    user.verified = True
-    user.email = EmailStr(user.email.lower())
-    new_user = models.User(**user.dict())
+    user_schema.role = "user"
+    user_schema.verified = True
+    user_schema.email = EmailStr(user_schema.email.lower())
+    new_user = models.User(**user_schema.dict())
 
     db.add(new_user)
     db.commit()

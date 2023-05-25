@@ -15,28 +15,21 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
 from tamise.database import Base, engine
 
 
 # Used for Administration
 class User(Base):
     __tablename__ = "user"
-    id = Column(
-        UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid.uuid4
-    )
+    id = Column(UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid.uuid4)
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     photo = Column(String, nullable=True)
     verified = Column(Boolean, nullable=False, server_default="False")
     role = Column(String, server_default="user", nullable=False)
-    created_at = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
-    )
-    updated_at = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
-    )
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+    updated_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
 
 
 # Table Dish
@@ -55,14 +48,14 @@ class Dish(Base):
 class Order(Base):
     __tablename__ = "order"
     id = Column(Integer, primary_key=True)
-    order_date = Column(DateTime, nullable=False, server_default=func.now())
+    order_date = Column(DateTime, nullable=True, server_default=func.now())
     delivery_date = Column(DateTime, nullable=False)
     name = Column(String, nullable=True)
     address = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
 
 
-class OrderItems(Base):
+class OrderItem(Base):
     __tablename__ = "order_item"
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey("order.id"))

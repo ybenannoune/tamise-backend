@@ -26,14 +26,17 @@ class LoginUser(BaseModel):
 
 
 class AuthToken(BaseModel):
+    status: str
     access_token: str
-    refresh_token: str
 
 
 class UserResponse(UserBase):
     id: UUID4
     created_at: datetime
     updated_at: datetime
+
+
+# Dish Schemas
 
 
 class Dish(BaseModel):
@@ -45,21 +48,44 @@ class Dish(BaseModel):
     description: str
     price: float
 
+    class Config:
+        orm_mode = True
 
-class CartItem(BaseModel):
-    dishId: int
+
+class UpdateDish(BaseModel):
+    name: str
+    category: str
+    ingredients: str
+    image: str
+    description: str
+    price: float
+
+
+class ListDish(BaseModel):
+    dishs: List[Dish]
+    len: int
+
+
+# Order Schemas
+
+
+class OrderResponse(BaseModel):
+    order_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class OrderItem(BaseModel):
+    dish_id: int
     quantity: int
     modifiers: str
     drink: str
 
 
 class Order(BaseModel):
-    order_id: int
-
-
-class CreateOrder(BaseModel):
     name: str
     phone_number: str
     address: str
-    cart_items: List[CartItem]
+    order_items: List[OrderItem]
     delivery_date: datetime

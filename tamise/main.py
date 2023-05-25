@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tamise.config import settings
 from tamise.database import Base, engine
-from tamise.routers import auth, order, user
+from tamise.routers import auth, dish, order, user
 
 
 def run_app(args=None):
@@ -26,7 +26,8 @@ app.add_middleware(
 
 app.include_router(auth.router, tags=["Auth"], prefix="/api/auth")
 app.include_router(user.router, tags=["Users"], prefix="/api/users")
-app.include_router(order.router, tags=["Orders"], prefix="/api/order")
+app.include_router(order.router, tags=["Orders"], prefix="/api/orders")
+app.include_router(dish.router, tags=["Dishs"], prefix="/api/dishs")
 
 
 @app.get("/api/healthchecker")
