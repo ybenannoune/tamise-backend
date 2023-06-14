@@ -36,11 +36,24 @@ class UserResponse(UserBase):
     updated_at: datetime
 
 
+# Extra Schemas
+
+
+class Drink(BaseModel):
+    id: int
+    name: str
+    price: float
+    image: str | None
+    volume: int
+
+    class Config:
+        orm_mode = True
+
+
 # Dish Schemas
 
 
-class Dish(BaseModel):
-    id: int
+class DishBase(BaseModel):
     name: str
     category: str
     ingredients: str
@@ -52,18 +65,12 @@ class Dish(BaseModel):
         orm_mode = True
 
 
-class UpdateDish(BaseModel):
-    name: str
-    category: str
-    ingredients: str
-    image: str
-    description: str
-    price: float
+class Dish(DishBase):
+    id: int
 
 
 class ListDish(BaseModel):
     dishs: List[Dish]
-    len: int
 
 
 # Order Schemas
@@ -78,14 +85,25 @@ class OrderResponse(BaseModel):
 
 class OrderItem(BaseModel):
     dish_id: int
+    drink_id: int | None
     quantity: int
-    modifiers: str
-    drink: str
+    modifiers: List[str] | None
 
 
-class Order(BaseModel):
+class OrderBase(BaseModel):
     name: str
     phone_number: str
     address: str
-    order_items: List[OrderItem]
     delivery_date: datetime
+    order_items: List[OrderItem]
+
+
+class Order(OrderBase):
+    order_status: str
+    order_date: datetime
+
+
+# Menu Schemas
+class Menu(BaseModel):
+    dishs: List[Dish]
+    drinks: List[Drink]

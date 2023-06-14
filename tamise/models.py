@@ -9,13 +9,12 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Table,
     func,
     text,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from tamise.database import Base, engine
+from tamise.database import Base
 
 
 # Used for Administration
@@ -44,6 +43,15 @@ class Dish(Base):
     price = Column(Float, nullable=False)
 
 
+class Drink(Base):
+    __tablename__ = "drink"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    price = Column(Float, nullable=False)
+    image = Column(String, nullable=True)
+    volume = Column(Integer, nullable=False)
+
+
 # Table Order
 class Order(Base):
     __tablename__ = "order"
@@ -53,6 +61,7 @@ class Order(Base):
     name = Column(String, nullable=True)
     address = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
+    status = Column(String, server_default="ordered", nullable=True)
 
 
 class OrderItem(Base):
@@ -60,9 +69,10 @@ class OrderItem(Base):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey("order.id"))
     dish_id = Column(Integer, ForeignKey("dish.id"))
+    drink_id = Column(Integer, ForeignKey("drink.id"))
     quantity = Column(Integer, nullable=False)
     modifiers = Column(String, nullable=True)
-    drink = Column(String, nullable=True)
 
     order = relationship(Order, foreign_keys=[order_id])
     dish = relationship(Dish, foreign_keys=[dish_id])
+    drink = relationship(Drink, foreign_keys=[drink_id])

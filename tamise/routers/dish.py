@@ -10,16 +10,13 @@ router = APIRouter()
 @router.get("/", response_model=schemas.ListDish)
 def get_dishs(db: Session = Depends(get_db)):
     dishs = dish_service.get_all_dishs(db)
-    return {
-        "dishs": dishs,
-        "len": len(dishs),
-    }
+    return {"dishs": dishs}
 
 
 @router.put("/{id}", response_model=schemas.Dish)
 def update_dish(
     id: int,
-    dish: schemas.UpdateDish,
+    dish: schemas.DishBase,
     db: Session = Depends(get_db),
     user_id: str = Depends(oauth2.require_user),
 ):
