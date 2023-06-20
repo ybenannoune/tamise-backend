@@ -23,7 +23,7 @@ def create_user(payload: schemas.CreateUser, db: Session = Depends(get_db)):
     return user
 
 
-@router.post("/login", response_model=schemas.AuthToken)
+@router.post("/login", status_code=status.HTTP_200_OK, response_model=schemas.AuthToken)
 def login(
     payload: schemas.LoginUser,
     response: Response,
@@ -32,11 +32,11 @@ def login(
 ):
     access_token, refresh_token = auth_service.login(payload, response, db, authorize)
 
-    return {"status": "success", "access_token": access_token}
+    return {"status": "success", "access_token": access_token, "refresh_token": refresh_token}
 
 
 # Refresh access token
-@router.post("/refresh", response_model=schemas.AuthToken)
+@router.post("/refresh", response_model=schemas.AccessToken)
 def refresh_token(
     response: Response,
     authorize: AuthJWT = Depends(),

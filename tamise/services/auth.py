@@ -1,15 +1,13 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import HTTPException, Response, status
 from fastapi_jwt_auth import AuthJWT
-from pydantic import EmailStr
 from sqlalchemy.orm import Session
-from tamise import models, schemas, utils
+from tamise import schemas, utils
 from tamise.config import settings
-from tamise.database import get_db
 from tamise.services import user as user_service
 
-ACCESS_TOKEN_EXPIRES_IN = 1
+ACCESS_TOKEN_EXPIRES_IN = settings.ACCESS_TOKEN_EXPIRES_IN
 REFRESH_TOKEN_EXPIRES_IN = settings.REFRESH_TOKEN_EXPIRES_IN
 
 

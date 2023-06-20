@@ -25,9 +25,15 @@ class LoginUser(BaseModel):
     password: constr(min_length=8)
 
 
+class AccessToken(BaseModel):
+    status: str
+    access_token: str
+
+
 class AuthToken(BaseModel):
     status: str
     access_token: str
+    refresh_token: str
 
 
 class UserResponse(UserBase):
@@ -42,9 +48,10 @@ class UserResponse(UserBase):
 class Drink(BaseModel):
     id: int
     name: str
-    price: float
+    price: float | None
     image: str | None
-    volume: int
+    volume: int | None
+    description: str | None
 
     class Config:
         orm_mode = True
@@ -76,13 +83,6 @@ class ListDish(BaseModel):
 # Order Schemas
 
 
-class OrderResponse(BaseModel):
-    order_id: int
-
-    class Config:
-        orm_mode = True
-
-
 class OrderItem(BaseModel):
     dish_id: int
     drink_id: int | None
@@ -90,7 +90,14 @@ class OrderItem(BaseModel):
     modifiers: List[str] | None
 
 
-class OrderBase(BaseModel):
+class OrderId(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class OrderBase(OrderId):
     name: str
     phone_number: str
     address: str
@@ -101,6 +108,10 @@ class OrderBase(BaseModel):
 class Order(OrderBase):
     order_status: str
     order_date: datetime
+
+
+class Status(BaseModel):
+    status: str
 
 
 # Menu Schemas

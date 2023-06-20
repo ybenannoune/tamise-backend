@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from tamise import models, schemas
 
@@ -21,7 +22,7 @@ def create_order(db: Session, order: schemas.OrderBase):
             dish_id=item.dish_id,
             quantity=item.quantity,
             modifiers=", ".join(item.modifiers),
-            drink=item.drink_id,
+            drink_id=item.drink_id,
         )
         for item in order.order_items
     ]
@@ -48,7 +49,7 @@ def get_all_orders(db: Session):
         if order.id not in merged_orders:
             # Créer un objet OrderResponse pour stocker les données fusionnées
             merged_order = schemas.Order(
-                order_id=order.id,
+                id=order.id,
                 name=order.name,
                 phone_number=order.phone_number,
                 address=order.address,
@@ -59,14 +60,33 @@ def get_all_orders(db: Session):
             )
             merged_orders[order.id] = merged_order
 
-        # Créer un objet CartItem pour chaque élément de commande
-        cart_item = schemas.OrderItem(
-            dish_id=order_item.dish_id,
-            quantity=order_item.quantity,
-            modifiers=order_item.modifiers.split(", "),
-            drink_id=order_item.drink_id,
-        )
-        merged_orders[order.id].order_items.append(cart_item)
+        if order_item != None:
+            # Créer un objet CartItem pour chaque élément de commande
+            orderItem = schemas.OrderItem(
+                dish_id=order_item.dish_id,
+                quantity=order_item.quantity,
+                modifiers=order_item.modifiers.split(", "),
+                drink_id=order_item.drink_id,
+            )
+            merged_orders[order.id].order_items.append(orderItem)
 
     # Retourner la liste des commandes fusionnées
     return list(merged_orders.values())
+
+
+def update_order_status(id: int, new_status: schemas.Status, db: Session, user_id: str):
+    order = db.query(models.Order).filter(models.Order.id == id).first()
+
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_200_OK, detail=f"No order with this id: {id} found"
+        )
+
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not allowed to perform this action",
+        )
+
+    order.status = new_status.status
+    db.commit()

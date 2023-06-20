@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from tamise import models, oauth2, schemas
 from tamise.database import get_db
@@ -13,7 +13,7 @@ def get_dishs(db: Session = Depends(get_db)):
     return {"dishs": dishs}
 
 
-@router.put("/{id}", response_model=schemas.Dish)
+@router.put("/{id}", status_code=status.HTTP_201_CREATED, response_model=schemas.Dish)
 def update_dish(
     id: int,
     dish: schemas.DishBase,
