@@ -47,9 +47,10 @@ class Drink(Base):
     __tablename__ = "drink"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
+    price = Column(Float, nullable=True)
     image = Column(String, nullable=True)
     volume = Column(Integer, nullable=False)
+    description = Column(String, nullable=True)
 
 
 # Table Order

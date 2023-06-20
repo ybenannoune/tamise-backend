@@ -1,28 +1,17 @@
 import uvicorn
-from fastapi import FastAPI, exceptions
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tamise.config import settings
 from tamise.database import Base, engine
 from tamise.routers import auth, dish, menu, order, user
 
-
-def run_app(args=None):
-    uvicorn.run("tamise.main:app", port=8000, log_level="info", host="localhost", reload=True)
-
-
 app = FastAPI()
-
-# @app.exception_handler(exceptions.RequestValidationError)
-# async def validation_exception_handler(request, exc):
-#     return {"detail": exc.errors(), "body": exc.body}
-
-
 origins = [settings.CLIENT_ORIGIN, "http://127.0.0.1:8000/"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -39,5 +28,13 @@ def root():
     return {"message": "Hello World"}
 
 
-if __name__ == "__main__":
+def run_app(args=None):
+    uvicorn.run("tamise.main:app", port=8000, log_level="info", host="0.0.0.0", reload=True)
+
+
+def build_db(args=None):
     Base.metadata.create_all(engine)
+
+
+if __name__ == "__main__":
+    run_app()
