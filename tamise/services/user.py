@@ -22,7 +22,7 @@ def create(user_schema: schemas.CreateUser, db: Session):
     user_schema.password = utils.hash_password(user_schema.password)
 
     user_schema.role = "user"
-    user_schema.verified = True
+    user_schema.verified = False
     user_schema.email = EmailStr(user_schema.email.lower())
     new_user = models.User(**user_schema.dict())
 

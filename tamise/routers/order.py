@@ -7,15 +7,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from tamise import models, oauth2, schemas
 from tamise.database import get_db
-from tamise.schemas import Order, OrderBase, OrderId
+from tamise.schemas import IdBase, Order, OrderBase
 
 router = APIRouter()
 
 
-@router.post("/", response_model=OrderId)
+@router.post("/", response_model=IdBase)
 def create_order(order: OrderBase, db: Session = Depends(get_db)):
     order_id = order_service.create_order(db, order)
-    return OrderId(id=order_id)
+    return IdBase(id=order_id)
 
 
 @router.get("/", response_model=List[Order])

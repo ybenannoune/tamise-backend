@@ -16,7 +16,7 @@ def get_dishs(db: Session = Depends(get_db)):
 @router.put("/{id}", status_code=status.HTTP_201_CREATED, response_model=schemas.Dish)
 def update_dish(
     id: int,
-    dish: schemas.DishBase,
+    dish: schemas.Dish,
     db: Session = Depends(get_db),
     user_id: str = Depends(oauth2.require_user),
 ):

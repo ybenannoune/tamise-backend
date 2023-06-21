@@ -5,6 +5,13 @@ from typing import List
 from pydantic import UUID4, BaseModel, EmailStr, constr
 
 
+class IdBase(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
 class UserBase(BaseModel):
     name: str
     email: EmailStr
@@ -42,25 +49,30 @@ class UserResponse(UserBase):
     updated_at: datetime
 
 
+# Comment Schemas
+
+
+class ContactMsg(IdBase):
+    name: str
+    email: str
+    message: str
+
+
 # Extra Schemas
 
 
-class Drink(BaseModel):
-    id: int
+class Drink(IdBase):
     name: str
     price: float | None
     image: str | None
     volume: int | None
     description: str | None
 
-    class Config:
-        orm_mode = True
-
 
 # Dish Schemas
 
 
-class DishBase(BaseModel):
+class Dish(IdBase):
     name: str
     category: str
     ingredients: str
@@ -70,10 +82,6 @@ class DishBase(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class Dish(DishBase):
-    id: int
 
 
 class ListDish(BaseModel):
@@ -90,14 +98,7 @@ class OrderItem(BaseModel):
     modifiers: List[str] | None
 
 
-class OrderId(BaseModel):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class OrderBase(OrderId):
+class OrderBase(IdBase):
     name: str
     phone_number: str
     address: str
