@@ -37,10 +37,12 @@ class Dish(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     ingredients = Column(String, nullable=False)
+    removable_ingredients = Column(String, nullable=True)
     image = Column(String, nullable=True)
     category = Column(String, nullable=True)
     description = Column(String, nullable=True)
     price = Column(Float, nullable=False)
+    customizable_dish = Column(Boolean, nullable=True)
 
 
 class Drink(Base):
@@ -53,6 +55,14 @@ class Drink(Base):
     description = Column(String, nullable=True)
 
 
+class Comment(Base):
+    __tablename__ = "comment"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+
+
 # Table Order
 class Order(Base):
     __tablename__ = "order"
@@ -62,7 +72,7 @@ class Order(Base):
     name = Column(String, nullable=True)
     address = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
-    status = Column(String, server_default="ordered", nullable=True)
+    status = Column(String, server_default="Commandé", nullable=True)
 
 
 class OrderItem(Base):

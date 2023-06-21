@@ -22,12 +22,12 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     restart: unless-stopped
 
-  backend:
-    image: python-backend
-    ports:
-      - '8000:8000'
-    env_file:
-      - ./.env
+  # backend:
+  #   image: python-backend
+  #   ports:
+  #     - '8000:8000'
+  #   env_file:
+  #     - ./.env
 
 volumes:
   postgres-db:
