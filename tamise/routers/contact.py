@@ -14,7 +14,7 @@ router = APIRouter()
 
 @router.post("/", response_model=IdBase)
 def create_contact_msg(comment: schemas.ContactMsg, db: Session = Depends(get_db)):
-    comment_id = comment_service.create_comment(comment, db)
+    comment_id = comment_service.create_contact_msg(comment, db)
     return IdBase(id=comment_id)
 
 

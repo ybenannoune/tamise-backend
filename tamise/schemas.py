@@ -76,9 +76,11 @@ class Dish(IdBase):
     name: str
     category: str
     ingredients: str
+    removable_ingredients: str | None
     image: str
     description: str
     price: float
+    customizable_dish: bool
 
     class Config:
         orm_mode = True

@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM arm64v8/python:3.11-slim
 
 WORKDIR /app
 
@@ -25,4 +25,4 @@ COPY . .
 EXPOSE 8000
 
 # Commande d'exécution de l'application
-CMD ["poetry", "run", "uvicorn", "tamise.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "app"]

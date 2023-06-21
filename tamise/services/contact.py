@@ -9,6 +9,7 @@ def get_contact_msgs(db: Session):
 
 
 def create_contact_msg(comment_schema: schemas.ContactMsg, db: Session):
+    del comment_schema.id  # ignore id
     new_comment = models.Comment(**comment_schema.dict())
 
     db.add(new_comment)
