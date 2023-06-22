@@ -80,7 +80,7 @@ class OrderItem(Base):
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey("order.id"))
     dish_id = Column(Integer, ForeignKey("dish.id"))
-    drink_id = Column(Integer, ForeignKey("drink.id"))
+    drink_id = Column(Integer, ForeignKey("drink.id"), nullable=True)
     quantity = Column(Integer, nullable=False)
     modifiers = Column(String, nullable=True)
 

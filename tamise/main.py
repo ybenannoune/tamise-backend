@@ -24,18 +24,10 @@ app.include_router(menu.router, tags=["Menu"], prefix="/api/menu")
 app.include_router(contact.router, tags=["Comment"], prefix="/api/contact")
 
 
-@app.get("/api/healthchecker")
+@app.get("/api/test")
 def root():
     return {"message": "Hello World"}
 
 
 def run_app(args=None):
     uvicorn.run("tamise.main:app", port=8000, log_level="info", host="0.0.0.0", reload=True)
-
-
-def build_db(args=None):
-    Base.metadata.create_all(engine)
-
-
-if __name__ == "__main__":
-    run_app()
