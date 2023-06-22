@@ -13,12 +13,14 @@ router = APIRouter()
 
 
 @router.post("/", response_model=IdBase)
-def create_contact_msg(comment: schemas.ContactMsg, db: Session = Depends(get_db)):
+async def create_contact_msg(comment: schemas.ContactMsg, db: Session = Depends(get_db)):
     comment_id = comment_service.create_contact_msg(comment, db)
     return IdBase(id=comment_id)
 
 
 @router.get("/", response_model=List[schemas.ContactMsg])
-def get_contact_msgs(db: Session = Depends(get_db), user_id: str = Depends(oauth2.require_user)):
+async def get_contact_msgs(
+    db: Session = Depends(get_db), user_id: str = Depends(oauth2.require_user)
+):
     comments = comment_service.get_all_comments(db)
     return comments

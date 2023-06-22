@@ -8,13 +8,13 @@ router = APIRouter()
 
 
 @router.get("/", response_model=schemas.ListDish)
-def get_dishs(db: Session = Depends(get_db)):
+async def get_dishs(db: Session = Depends(get_db)):
     dishs = dish_service.get_all_dishs(db)
     return {"dishs": dishs}
 
 
 @router.put("/{id}", status_code=status.HTTP_201_CREATED, response_model=schemas.Dish)
-def update_dish(
+async def update_dish(
     id: int,
     dish: schemas.Dish,
     db: Session = Depends(get_db),

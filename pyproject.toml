@@ -17,8 +17,8 @@ fastapi-jwt-auth = {extras = ["asymmetric"], version = "^0.5.0"}
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
 alembic = "^1.11.1"
 pydantic = {extras = ["email"], version = "^1.10.8"}
-psycopg2 = "^2.9.6"
 passlib = "^1.7.4"
+psycopg2-binary = "^2.9.6"
 
 [tool.poetry.scripts]
 app = "tamise.main:run_app"

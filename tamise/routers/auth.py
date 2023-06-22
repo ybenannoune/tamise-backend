@@ -18,13 +18,13 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.UserResponse,
 )
-def create_user(payload: schemas.CreateUser, db: Session = Depends(get_db)):
+async def create_user(payload: schemas.CreateUser, db: Session = Depends(get_db)):
     user = user_service.create(payload, db)
     return user
 
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=schemas.AuthToken)
-def login(
+async def login(
     payload: schemas.LoginUser,
     response: Response,
     db: Session = Depends(get_db),
@@ -37,7 +37,7 @@ def login(
 
 # Refresh access token
 @router.post("/refresh", response_model=schemas.AccessToken)
-def refresh_token(
+async def refresh_token(
     response: Response,
     authorize: AuthJWT = Depends(),
     db: Session = Depends(get_db),
@@ -47,7 +47,7 @@ def refresh_token(
 
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
-def logout(
+async def logout(
     request: Request,
     response: Response,
     authorize: AuthJWT = Depends(),
