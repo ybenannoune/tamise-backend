@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster as requirements-stage
+FROM arm64v8/python:3.10-slim-buster as requirements-stage
 WORKDIR /tmp
 RUN pip install poetry
 COPY ./pyproject.toml ./poetry.lock* /tmp/

@@ -7,6 +7,8 @@ from tamise.services import user as user_service
 router = APIRouter()
 
 
-@router.get("/me", response_model=schemas.UserResponse)
-async def get_me(db: Session = Depends(get_db), user_id: str = Depends(oauth2.require_user)):
+@router.get("/me", response_model=schemas.User)
+async def get_me(
+    db: Session = Depends(get_db), user_id: str = Depends(oauth2.require_user)
+):
     return user_service.get_user_from_id(user_id, db)

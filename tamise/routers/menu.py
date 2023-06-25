@@ -12,9 +12,6 @@ router = APIRouter()
 
 @router.get("/", response_model=schemas.Menu)
 async def get_menu(db: Session = Depends(get_db)):
-    dishs = db.query(models.Dish).all()
+    dishes = db.query(models.Dish).all()
     drinks = db.query(models.Drink).all()
-    return {
-        "dishs": dishs,
-        "drinks": drinks,
-    }
+    return schemas.Menu(dishes=dishes, drinks=drinks)

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from tamise import models, schemas
 
 
-def create_order(db: Session, order: schemas.OrderBase):
+def create_order(db: Session, order: schemas.NewOrder):
     new_order = models.Order(
         name=order.name,
         delivery_date=order.delivery_date,
@@ -26,7 +26,9 @@ def create_order(db: Session, order: schemas.OrderBase):
         )
         for item in order.order_items
     ]
-    db.bulk_save_objects(order_items)  # un seul call à la db plutôt que plein de petits calls
+    db.bulk_save_objects(
+        order_items
+    )  # un seul call à la db plutôt que plein de petits calls
     db.commit()
 
     return new_order.id
@@ -74,7 +76,9 @@ def get_all_orders(db: Session):
     return list(merged_orders.values())
 
 
-def update_order_status(id: int, new_status: schemas.Status, db: Session, user_id: str):
+def update_order_status(
+    id: int, new_status: schemas.UpdatedStatus, db: Session, user_id: str
+):
     order = db.query(models.Order).filter(models.Order.id == id).first()
 
     if not order:

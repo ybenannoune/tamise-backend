@@ -13,11 +13,11 @@ async def get_dishs(db: Session = Depends(get_db)):
     return {"dishs": dishs}
 
 
-@router.put("/{id}", status_code=status.HTTP_201_CREATED, response_model=schemas.Dish)
-async def update_dish(
-    id: int,
-    dish: schemas.Dish,
-    db: Session = Depends(get_db),
-    user_id: str = Depends(oauth2.require_user),
-):
-    return dish_service.update_dish(id, dish, db, user_id)
+# @router.put("/{id}", status_code=status.HTTP_201_CREATED, response_model=schemas.Dish)
+# async def update_dish(
+#     id: int,
+#     dish: schemas.NewDish,  # same schema without ID
+#     db: Session = Depends(get_db),
+#     user_id: str = Depends(oauth2.require_user),
+# ):
+#     return dish_service.update_dish(id, dish, db, user_id)

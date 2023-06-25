@@ -5,26 +5,19 @@ from typing import List
 from pydantic import UUID4, BaseModel, EmailStr, constr
 
 
-class IdBase(BaseModel):
+class CreatedID(BaseModel):
     id: int
 
-    class Config:
-        orm_mode = True
 
-
-class UserBase(BaseModel):
+class NewUser(BaseModel):
     name: str
     email: EmailStr
     photo: str
+    password: constr(min_length=8)
+    role: str = "user"
 
     class Config:
         orm_mode = True
-
-
-class CreateUser(UserBase):
-    password: constr(min_length=8)
-    role: str = "user"
-    verified: bool = False
 
 
 class LoginUser(BaseModel):
@@ -43,36 +36,56 @@ class AuthToken(BaseModel):
     refresh_token: str
 
 
-class UserResponse(UserBase):
+class User(BaseModel):
     id: UUID4
-    created_at: datetime
-    updated_at: datetime
+    name: str
+    email: str
+    photo: str
+    role: str
+
+    class Config:
+        orm_mode = True
 
 
 # Comment Schemas
 
 
-class ContactMsg(IdBase):
+class NewContactMsg(BaseModel):
     name: str
     email: str
     message: str
 
 
+class ContactMsg(BaseModel):
+    id: str
+    name: str
+    email: str
+    message: str
+
+    class Config:
+        orm_mode = True
+
+
 # Extra Schemas
 
 
-class Drink(IdBase):
+class Drink(BaseModel):
+    id: str
     name: str
     price: float | None
     image: str | None
     volume: int | None
     description: str | None
 
+    class Config:
+        orm_mode = True
+
 
 # Dish Schemas
 
 
-class Dish(IdBase):
+class Dish(BaseModel):
+    id: int
     name: str
     category: str
     ingredients: str
@@ -100,7 +113,7 @@ class OrderItem(BaseModel):
     modifiers: List[str] | None
 
 
-class OrderBase(IdBase):
+class NewOrder(BaseModel):
     name: str
     phone_number: str
     address: str
@@ -108,16 +121,25 @@ class OrderBase(IdBase):
     order_items: List[OrderItem]
 
 
-class Order(OrderBase):
+class Order(BaseModel):
+    id: str
+    name: str
+    phone_number: str
+    address: str
+    delivery_date: datetime
+    order_items: List[OrderItem]
     order_status: str
     order_date: datetime
 
+    class Config:
+        orm_mode = True
 
-class Status(BaseModel):
+
+class UpdatedStatus(BaseModel):
     status: str
 
 
 # Menu Schemas
 class Menu(BaseModel):
-    dishs: List[Dish]
+    dishes: List[Dish]
     drinks: List[Drink]

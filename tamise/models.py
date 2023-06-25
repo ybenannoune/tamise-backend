@@ -20,15 +20,21 @@ from tamise.database import Base
 # Used for Administration
 class User(Base):
     __tablename__ = "user"
-    id = Column(UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid.uuid4)
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid.uuid4
+    )
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     photo = Column(String, nullable=True)
     verified = Column(Boolean, nullable=False, server_default="False")
     role = Column(String, server_default="user", nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
-    updated_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    updated_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
 
 
 # Table Dish

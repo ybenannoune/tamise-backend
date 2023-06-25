@@ -21,7 +21,9 @@ class OAuth2Settings(BaseModel):
         False  # todo understand why it doesn't work without in Swagger UI
     )
     authjwt_public_key: str = base64.b64decode(settings.JWT_PUBLIC_KEY).decode("utf-8")
-    authjwt_private_key: str = base64.b64decode(settings.JWT_PRIVATE_KEY).decode("utf-8")
+    authjwt_private_key: str = base64.b64decode(settings.JWT_PRIVATE_KEY).decode(
+        "utf-8"
+    )
 
 
 @AuthJWT.load_config
@@ -61,12 +63,14 @@ def require_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
 
     except UserNotVerified:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Please verify your account"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please verify your account",
         )
 
     except Exception:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is invalid or has expired"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is invalid or has expired",
         )
 
     return user_id
