@@ -25,9 +25,9 @@ Configurer le .env pour communiquer avec la BDD
 1. Clonez ce dépôt sur votre machine.
 
 ```bash
-git clone https://github.com/votre-utilisateur/votre-projet-backend.git
+git clone https://github.com/ybenannoune/tamise-backend.git
 ```
 
-2. Lancer poetry install
+2. poetry install
 
 3. poetry run app
